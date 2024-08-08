@@ -1,0 +1,71 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+class Kata
+{
+    public static string SendMessage(string message)
+    {
+        //declair result
+      StringBuilder result = new StringBuilder();
+        // saving previous key for if 2 or more letters exist on the same key
+      int previousKey  = -1;
+      //create dictionary kvp for letters matching!
+      Dictionary<int, string> keyPad = new Dictionary<int, string>
+      {
+          {1, ".,?!"}, {2, "abc"}, {3, "def"},
+          {4, "ghi"}, {5, "jkl"}, {6, "mno"},
+          {7, "pqrs"}, {8, "tuv"}, {9, "wxyz"},
+          {-1, "'-+="}, {0, " "}, {-2, "case"}
+      };
+      //loop through the message and match with the dictionary!
+      for(int i = 0; i < message.Length ; i++)
+      {
+        //first edge case for Caps
+        if(char.IsUpper(message[i]))
+        {
+          result.Append("#");
+        }
+        //edge case for numeric values
+        else if (char.IsDigit(message[i]) || message[i] == '*' || message[i] == '#')
+        {
+          result.Append(message[i]);
+          result.Append("-");
+          continue;
+        }
+        //edge case for spaces
+        else if (message[i] == ' ')
+        {
+          result.Append(0);
+          continue;
+        }
+        //for each to look up letters
+        foreach(KeyValuePair<int, string> kvp in keyPad)   
+        {
+          if(kvp.Value.Contains(Char.ToLower(message[i])))
+          {
+            // getting the index for the append loop
+            int currentKey = kvp.Key;
+            int index = kvp.Value.IndexOf(Char.ToLower(message[i]));
+            
+          if(currentKey == previousKey)
+            {
+                result.Append(" ");
+            }
+              for(int j = 0 ; j <= index ; j++ )
+              {
+                result.Append(currentKey);
+              }
+            
+            if(currentKey == previousKey && Char.IsUpper(message[i - 1]) && i != message.Length -1)
+              {
+                result.Append("#");
+              }
+              previousKey = currentKey;
+            break;
+          }
+        }  
+      }
+      return result.ToString();
+    }
+}

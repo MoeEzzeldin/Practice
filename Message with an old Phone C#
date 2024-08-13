@@ -40,48 +40,39 @@ class Kata
             else if (char.IsDigit(currentVal) || currentVal == '#' || currentVal == '*') //Allow Num, '#', and '*'
             {
                 if ((currentVal - '0') == previousKey || (currentVal == '*'))// if cast [i] to int == prevkey for this case ||
-                {//                                       Expects "2 2-#3 3-";     C.WL(SendMessage("a2D3"))        <=======||
-                    try
+                {//                                      Expects "2 2-#3 3-";     C.WL(SendMessage("a2D3"))        <=======||
+                    if (result.Length > 0)
                     {
                         if (char.IsDigit(currentVal) && result[result.Length - 1] != '-')
                         {
                             result.Append(' ');//append space only if it's a num and a numeric char case
                         }
                     }
-                    catch (IndexOutOfRangeException) { }
-                    try
-                    {                         //append space when it's a '*'?, last key entred is also '*'?, and last char in message wasn't a press and hold '*'.
-                        if (currentVal == '*' && previousKey == '*' && message[i - 1] != '-')
-                        {
-                            result.Append(' ');
-                        }
-                    }
-                    catch (IndexOutOfRangeException) { }
-                }// allow rest of the cases for click and hold 
-                result.Append(currentVal);
-                result.Append("-");
-                //assign prev key the right value for the next loop
-                if (currentVal == '*')
-                {
-                    previousKey = '*';
-                }
-                else
-                {
-                    previousKey = currentVal - '0';      //cast ascii to int without parse or cast ==>  (currentVal - 48 = numValue)
-                }
-                continue;//exit loop
-            }
-            //Spaces case
-            else if (currentVal == ' ')
-            {
-                try
-                {//try to check if the string got value to skip first round for this case ==> "       "  expected ==> "0 0 0 0 0"
-                    if (result[result.Length - 1] == '0')
+                    //append space when it's a '*'?, last key entred is also '*'?, and last char in message wasn't a press and hold '*'.
+                    if (currentVal == '*' && previousKey == '*' && message[i - 1] != '-')
                     {
                         result.Append(' ');
                     }
                 }
-                catch (IndexOutOfRangeException) { }
+                // allow rest of the cases for click and hold 
+                result.Append(currentVal);
+                result.Append("-");
+                //assign prevKey the right value for the next iteration
+                previousKey = currentVal == '*' ? '*' : currentVal - '0';
+                continue;//exit loop
+            }
+            
+            //Spaces case
+            else if (currentVal == ' ')
+            {
+                //try to check if the string got value to skip first round for this case ==> "       "  expected ==> "0 0 0 0 0"
+                    if(result.Length > 0)
+                    {
+                        if (result[result.Length - 1] == '0')
+                        {
+                            result.Append(' ');
+                        }
+                    }
                 result.Append(0);
                 previousKey = 0;
                 continue;
@@ -92,8 +83,8 @@ class Kata
                 if (kvp.Value.Contains(Char.ToLower(currentVal)))
                 {
                     currentKey = kvp.Key;//save current key
-                    int index = kvp.Value.IndexOf(Char.ToLower(message[i])); //Save index for the loop
-                    if (currentKey == previousKey)
+                    int index = kvp.Value.IndexOf(Char.ToLower(message[i])); // bring the indexOf the char you found on my keyPad
+                    if (currentKey == previousKey)//only when currentKey == PreviousKey
                     {//append space if last char added to result isnt '-' as a hold to a key on the Keypad 
                         try
                         {
@@ -104,7 +95,7 @@ class Kata
                         }
                         catch (IndexOutOfRangeException) { }
                     }
-                    //use the saved index of the current value to append it based on the number of clicks the user entered
+                    //use the saved index of the current value to prent it the number of clicks the user entered
                     for (int j = 0; j <= index; j++)
                     {
                         if (currentKey == '*')
@@ -138,7 +129,5 @@ class Programm
         Console.WriteLine(Kata.SendMessage("LoLoLOLO"));
         Console.WriteLine(Kata.SendMessage("!@#$^^&**"));
         Console.WriteLine(Kata.SendMessage("0 0 0 0 0 0"));
-
     }
 }
-Thanks https://github.com/DentistOmarAshraf, for explaining how some of these cases work \M/.

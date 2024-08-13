@@ -6,83 +6,139 @@ class Kata
 {
     public static string SendMessage(string message)
     {
-        if (string.IsNullOrEmpty(message))
-        {
-            return "";
-        }
-
         StringBuilder result = new StringBuilder();
-        int currentKey = 0;
-        int previousKey = -1;
-        char currentVal = '0';
-        bool isUpper = false;
-        int index = 0;
+        int previousKey = -4;
+        int currentKey = -3;
+        char currentVal = ' ';
+        bool Upper = false;
 
-        //create dictionary kvp for letters matching!
         Dictionary<int, string> keyPad = new Dictionary<int, string>
-        {
-            {1, ".,?!"}, {2, "abc"}, {3, "def"},
-            {4, "ghi"}, {5, "jkl"}, {6, "mno"},
-            {7, "pqrs"}, {8, "tuv"}, {9, "wxyz"},
-            {-1, "'-+="}, {0, " "}, {-2, "case"}
-        };
+      {
+          {1, ".,?!"}, {2, "abc"}, {3, "def"},
+          {4, "ghi"}, {5, "jkl"}, {6, "mno"},
+          {7, "pqrs"}, {8, "tuv"}, {9, "wxyz"},
+          {'*', "'-+="}, {0, " "}, {'#', "case"}
+      };
 
         for (int i = 0; i < message.Length; i++)
         {
             currentVal = message[i];
-            // Handle numeric values, *, and #
-            if (char.IsDigit(currentVal) || currentVal == '*' || currentVal == '#')
+            //upperCase
+            if (char.IsUpper(currentVal) && !Upper)
             {
+                Upper = true;
+                result.Append("#");
+                previousKey = '#';
+            }//Switch to lowerCAse
+            if (char.IsLower(currentVal) && Upper)
+            {
+                Upper = false;
+                result.Append("#");
+                previousKey = '#';
+            }
+            //Numeric cases  (<o>.<o>)" for press and hold 
+            else if (char.IsDigit(currentVal) || currentVal == '#' || currentVal == '*') //Allow Num, '#', and '*'
+            {
+                if ((currentVal - '0') == previousKey || (currentVal == '*'))// if cast [i] to int == prevkey for this case ||
+                {//                                      Expects "2 2-#3 3-";     C.WL(SendMessage("a2D3"))        <=======||
+                    try
+                    {
+                        if (char.IsDigit(currentVal) && result[result.Length - 1] != '-')
+                        {
+                            result.Append(' ');//append space only if it's a num and a numeric char case
+                        }
+                    }
+                    catch (IndexOutOfRangeException) { }
+                    try
+                    {//append space when it's a '*'?, last key entred is also '*'?, and last char in message wasn't a press and hold '*'.
+                        if (currentVal == '*' && previousKey == '*' && message[i - 1] != '-')
+                        {
+                            result.Append(' ');
+                        }
+                    }
+                    catch (IndexOutOfRangeException) { }
+                }// allow rest of the cases for click and hold 
                 result.Append(currentVal);
-                result.Append('-');
-                previousKey = currentKey;
+                result.Append("-");
+                //assign prev key the right value for the next loop
+                if (currentVal == '*')
+                {
+                    previousKey = '*';
+                }
+                else
+                {
+                    previousKey = currentVal - '0';//cast ascii to int without parse or (int)   currentVal - 48 = numValue
+                }
+                continue;//exit loop
             }
-            // Handle case toggle
-            if (char.IsUpper(currentVal) && !isUpper)
+            //Spaces case
+            else if (currentVal == ' ')
             {
-                result.Append('#');
-                isUpper = true;
-                previousKey = currentKey;
+                try
+                {//try to check if the string got value to skip first round for this case ==> "       "  expected ==> "0 0 0 0 0"
+                    if (result[result.Length - 1] == '0')
+                    {
+                        result.Append(' ');
+                    }
+                }
+                catch (IndexOutOfRangeException) { }
+                result.Append(0);
+                previousKey = 0;
+                continue;
             }
-            else if (char.IsLower(currentVal) && isUpper)
-            {
-                result.Append('#');
-                isUpper = false;
-                previousKey = currentKey;
-            }
+            //Mapping loop to identify key and append typing based on number of keys clicked
             foreach (KeyValuePair<int, string> kvp in keyPad)
             {
-                if (kvp.Value.Contains(char.ToLower(currentVal)))
+                if (kvp.Value.Contains(Char.ToLower(currentVal)))
                 {
-                    currentKey = kvp.Key;
-                    index = kvp.Value.IndexOf(char.ToLower(currentVal));
-                    // Insert a space if the same key is used consecutively
-                    if (currentKey == previousKey && result[result.Length - 1] != '-')
-                    {
-                      result.Append(' ');
+                    currentKey = kvp.Key;//save current key
+                    int index = kvp.Value.IndexOf(Char.ToLower(message[i])); // bring the indexOf the char you found on my keyPad
+                    if (currentKey == previousKey)//only when currentKey == PreviousKey
+                    {//append space if last char added to result isnt '-' as a hold to a key on the Keypad 
+                        try
+                        {
+                            if (result[result.Length - 1] != '-')
+                            {
+                                result.Append(" ");
+                            }
+                        }
+                        catch (IndexOutOfRangeException) { }
                     }
-                  for (int j = 0; j <= index; j++)
-                  {
-                      if (currentKey == -1)
-                      {
-                          result.Append('*');
-                          previousKey = currentKey;
-                          continue;
-                      }
-                      else if (currentKey == -2)
-                      {
-                          result.Append('#');
-                          previousKey = currentKey;
-                          continue;
-                      }
-                          result.Append(currentKey);   
-                }
+                    //use the saved index of the current value to prent it the number of clicks the user entered
+                    for (int j = 0; j <= index; j++)
+                    {
+                        if (currentKey == '*')
+                        {
+                            result.Append('*');
+                        }
+                        else
+                        {
+                            result.Append(currentKey);
+                        }
+                    }
                     previousKey = currentKey;
                     break;
                 }
             }
         }
-
         return result.ToString();
     }
 }
+
+
+class Programm
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine(Kata.SendMessage("Hello World!"));
+        Console.WriteLine(Kata.SendMessage("a2D3"));
+        Console.WriteLine(Kata.SendMessage("      "));
+        Console.WriteLine(Kata.SendMessage("hihihihi"));
+        Console.WriteLine(Kata.SendMessage("MoeEzzEldin"));
+        Console.WriteLine(Kata.SendMessage("LoLoLOLO"));
+        Console.WriteLine(Kata.SendMessage("!@#$^^&**"));
+        Console.WriteLine(Kata.SendMessage("0 0 0 0 0 0"));
+
+    }
+}
+Thanks https://github.com/DentistOmarAshraf, for explaining how some of these cases work \M/.

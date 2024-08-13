@@ -40,7 +40,7 @@ class Kata
             else if (char.IsDigit(currentVal) || currentVal == '#' || currentVal == '*') //Allow Num, '#', and '*'
             {
                 if ((currentVal - '0') == previousKey || (currentVal == '*'))// if cast [i] to int == prevkey for this case ||
-                {//                                      Expects "2 2-#3 3-";     C.WL(SendMessage("a2D3"))        <=======||
+                {//                                       Expects "2 2-#3 3-";     C.WL(SendMessage("a2D3"))        <=======||
                     try
                     {
                         if (char.IsDigit(currentVal) && result[result.Length - 1] != '-')
@@ -50,7 +50,7 @@ class Kata
                     }
                     catch (IndexOutOfRangeException) { }
                     try
-                    {//append space when it's a '*'?, last key entred is also '*'?, and last char in message wasn't a press and hold '*'.
+                    {                         //append space when it's a '*'?, last key entred is also '*'?, and last char in message wasn't a press and hold '*'.
                         if (currentVal == '*' && previousKey == '*' && message[i - 1] != '-')
                         {
                             result.Append(' ');
@@ -67,7 +67,7 @@ class Kata
                 }
                 else
                 {
-                    previousKey = currentVal - '0';//cast ascii to int without parse or (int)   currentVal - 48 = numValue
+                    previousKey = currentVal - '0';      //cast ascii to int without parse or cast ==>  (currentVal - 48 = numValue)
                 }
                 continue;//exit loop
             }
@@ -92,8 +92,8 @@ class Kata
                 if (kvp.Value.Contains(Char.ToLower(currentVal)))
                 {
                     currentKey = kvp.Key;//save current key
-                    int index = kvp.Value.IndexOf(Char.ToLower(message[i])); // bring the indexOf the char you found on my keyPad
-                    if (currentKey == previousKey)//only when currentKey == PreviousKey
+                    int index = kvp.Value.IndexOf(Char.ToLower(message[i])); //Save index for the loop
+                    if (currentKey == previousKey)
                     {//append space if last char added to result isnt '-' as a hold to a key on the Keypad 
                         try
                         {
@@ -104,7 +104,7 @@ class Kata
                         }
                         catch (IndexOutOfRangeException) { }
                     }
-                    //use the saved index of the current value to prent it the number of clicks the user entered
+                    //use the saved index of the current value to append it based on the number of clicks the user entered
                     for (int j = 0; j <= index; j++)
                     {
                         if (currentKey == '*')

@@ -90,3 +90,4 @@ const charMap = {
   '#': '#-',
   '*': '*-'
 };
+Solution by https://github.com/trevorbennett. Thanks for working on it with me \M/

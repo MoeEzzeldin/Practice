@@ -114,6 +114,29 @@ class Kata
         }
         return result.ToString();
     }
+    public static void SelectionSorting(int[] arr)
+    {
+        // declair vars
+        int n, minIndex, temp;
+        // I loop for each index
+        n = arr.Length;
+        for(int i = 0; i < n - 1; i++)
+        {
+        //assign min i
+            minIndex = i; 
+        //jloop to search mins 
+            for(int j = i + 1; j < arr.Length; j++)
+            {
+        //condition to reassign min 
+                if(arr[j] < arr[minIndex])
+                    minIndex = j;
+            }
+        //swap
+        temp = arr[minIndex];
+        arr[minIndex] = arr[i];
+        arr[i] = temp;
+        }
+    }
 }
 
 
@@ -121,13 +144,17 @@ class Programm
 {
     static void Main(string[] args)
     {
-        Console.WriteLine(Kata.SendMessage("Hello World!"));
-        Console.WriteLine(Kata.SendMessage("a2D3"));
-        Console.WriteLine(Kata.SendMessage("      "));
-        Console.WriteLine(Kata.SendMessage("hihihihi"));
-        Console.WriteLine(Kata.SendMessage("MoeEzzEldin"));
-        Console.WriteLine(Kata.SendMessage("LoLoLOLO"));
-        Console.WriteLine(Kata.SendMessage("!@#$^^&**"));
-        Console.WriteLine(Kata.SendMessage("0 0 0 0 0 0"));
+        // Console.WriteLine(Kata.SendMessage("Hello World!"));
+        // Console.WriteLine(Kata.SendMessage("a2D3"));
+        // Console.WriteLine(Kata.SendMessage("      "));
+        // Console.WriteLine(Kata.SendMessage("hihihihi"));
+        // Console.WriteLine(Kata.SendMessage("MoeEzzEldin"));
+        // Console.WriteLine(Kata.SendMessage("LoLoLOLO"));
+        // Console.WriteLine(Kata.SendMessage("!@#$^^&**"));
+        // Console.WriteLine(Kata.SendMessage("0 0 0 0 0 0"));
+        int [] arr = new int [] {20, 50, 30, 70, 60, 10};
+        kata.SelectionSorting(arr);
+        Console.WriteLine(arr);
     }
+
 }

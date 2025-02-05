@@ -1,4 +1,4 @@
-const Database = require('../config/db');
+const Database = require('../db/db');
 const News = require('../models/news');
 
 class NewsDAO {

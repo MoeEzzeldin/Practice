@@ -1,32 +1,34 @@
-const sql = require("mssql");
+require('dotenv').config();
+const sql = require('mssql');
 
-const dbConfig = {
-    server: process.env.DB_SERVER,
-    database: process.env.DB_DATABASE,
-    port: parseInt(process.env.DB_PORT) || 1433,
-    options: {
-        encrypt: false, // Set to true if using Azure
-        trustServerCertificate: true, // Required for self-signed certs
-    },
+const config = {
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  server: process.env.DB_SERVER,
+  database: process.env.DB_DATABASE,
+  options: {
+    encrypt: false, // Set to true if using Azure MSSQL
+    trustServerCertificate: true
+  }
 };
-console.log(dbConfig)
 
-// Check for Windows Authentication
-if (process.env.DB_AUTH === "integrated") {
-    dbConfig.options.trustedConnection = true; // Uses Windows Auth
-} else {
-    dbConfig.user = process.env.DB_USER;
-    dbConfig.password = process.env.DB_PASSWORD;
-}
+class Database {
+  constructor() {
+    this.pool = null;
+  }
 
-// Function to connect to SQL Server
-async function connectDB() {
-    try {
-        await sql.connect(dbConfig);
-        console.log("Connected to SQL Server successfully");
-    } catch (error) {
-        console.error("Database connection failed:", error);
+  async connect() {
+    if (!this.pool) {
+      try {
+        this.pool = await sql.connect(config);
+        console.log('Connected to MSSQL');
+      } catch (error) {
+        console.error('Database connection failed:', error);
+        throw error;
+      }
     }
+    return this.pool;
+  }
 }
 
-module.exports = { sql, connectDB };
+module.exports = new Database();

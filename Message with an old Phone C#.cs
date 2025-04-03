@@ -40,7 +40,7 @@ class Kata
             else if (char.IsDigit(currentVal) || currentVal == '#' || currentVal == '*') //Allow Num, '#', and '*'
             {
                 if ((currentVal - '0') == previousKey || (currentVal == '*'))// if cast [i] to int == prevkey for this case ||
-                {//                                      Expects "2 2-#3 3-";     C.WL(SendMessage("a2D3"))        <=======||
+                {//                                         C.WL(SendMessage("a2D3"))  => Expects "2 2-#3 3-";      <=======||
                     if (result.Length > 0)
                     {
                         if (char.IsDigit(currentVal) && result[result.Length - 1] != '-')

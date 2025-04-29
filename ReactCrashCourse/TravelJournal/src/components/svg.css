@@ -1,0 +1,29 @@
+/* Parent container with defined dimensions */
+.svg-container {
+  width: 80%;       /* Can be any width - SVG will adapt */
+  max-width: 500px; /* Optional maximum width */
+  height: 300px;    /* Fixed height or could be percentage of viewport */
+  border: 1px solid #ccc; /* Optional border to visualize the container */
+  margin: 0 auto;   /* Center the container */
+}
+
+/* SVG that fills the parent container completely */
+.responsive-svg {
+  width: 100%;  /* Takes full width of parent */
+  height: 100%; /* Takes full height of parent */
+  display: block; /* Removes unwanted spacing */
+}
+
+/* Optional: You can add animations or hover effects for nested elements */
+.inner-elements:hover circle {
+  fill: red;
+  transition: fill 0.3s ease;
+}
+
+.decorations circle {
+  transition: transform 0.3s ease;
+}
+
+.decorations circle:hover {
+  transform: scale(1.5);
+}
